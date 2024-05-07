@@ -17,9 +17,9 @@ Instale as dependências do Python com o seguinte comando:
     pip install -r requirements.txt
 
 
-Configuração das Variáveis de Ambiente
+## Configuração das Variáveis de Ambiente
 
-Este projeto requer a configuração de algumas variáveis de ambiente para o MySQL funcionar corretamente com a aplicação. Você pode configurá-las usando export ou criando um arquivo .env.
+Este projeto requer a configuração de algumas variáveis de ambiente para o PostgreSQL funcionar corretamente com a aplicação. Você pode configurá-las usando export ou criando um arquivo .env.
 
 Configuração usando export:
 
