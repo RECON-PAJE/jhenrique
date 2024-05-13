@@ -1,39 +1,69 @@
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.core.validators import RegexValidator
 from django.db import models
-from django.utils import timezone
-from .managers import CustomAccountManager
+from django.conf import settings
+from django.core.validators import validate_email
 
 CARD_NUMBER_VALIDATOR = RegexValidator(regex=r"^\d{10}$")
 
 
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, nome, password):
+        if not email:
+            raise ValueError("O e-mail deve ser fornecido")
+        email = self.normalize_email(email)
+        validate_email(email)
+        user = self.model(email=email, nome=nome)
+        user.set_password(password)
+        user.is_staff = False
+        user.is_superuser = False
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, nome, password):
+        user = self.create_user(email=email, nome=nome, password=password)
+        user.is_active = True
+        user.is_staff = True
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     nome = models.CharField(max_length=30)
-    matricula = models.CharField(max_length=6, unique=True)
     email = models.EmailField(unique=True)
 
-    is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
 
-    date_joined = models.DateTimeField(default=timezone.now)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['nome']
 
-    objects = CustomAccountManager()
-
-    USERNAME_FIELD = 'matricula'
-    REQUIRED_FIELDS = ['nome', 'email']
-
-    def __str__(self):
-        return self.nome
+    objects = CustomUserManager()
 
 
-class UsuarioComum(models.Model):
+class Aluno(models.Model):
     nome = models.CharField(max_length=30)
     matricula = models.CharField(max_length=6, unique=True)
-    isento = models.BooleanField(default=False)
-    creditos = models.IntegerField(default=0)
     numero_cartao = models.CharField(
-        max_length=10, validators=[CARD_NUMBER_VALIDATOR])
+        max_length=10, unique=True, validators=[CARD_NUMBER_VALIDATOR])
+
+
+class Relatorio(models.Model):
+    solicitante = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='relatorios')
+    data_inicio = models.DateField()
+    data_fim = models.DateField()
+    tipo_dados = models.CharField(max_length=100)
 
     def __str__(self):
-        return f"{self.nome} ({self.matricula})"
+        return f"{self.solicitante.nome} ({self.data_inicio} - {self.data_fim})"
+
+
+class Acesso(models.Model):
+    numero_cartao = models.CharField(max_length=10)
+    matricula = models.CharField(max_length=10)
+    nome = models.CharField(max_length=100)
+    data_hora = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.nome} - {self.data_hora.strftime('%d/%m/%Y - %H:%M')}"
