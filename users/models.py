@@ -51,18 +51,16 @@ class Aluno(models.Model):
 class Relatorio(models.Model):
     solicitante = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='relatorios')
-    data_inicio = models.DateField()
-    data_fim = models.DateField()
-    tipo_dados = models.CharField(max_length=100)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.solicitante.nome} ({self.data_inicio} - {self.data_fim})"
+        return f"{self.solicitante.username} - {self.timestamp.strftime('%d/%m/%Y %H:%M')}"
 
 
 class Acesso(models.Model):
     numero_cartao = models.CharField(max_length=10)
-    matricula = models.CharField(max_length=10)
-    nome = models.CharField(max_length=100)
+    matricula = models.CharField(max_length=6)
+    nome = models.CharField(max_length=30)
     data_hora = models.DateTimeField()
 
     def __str__(self):

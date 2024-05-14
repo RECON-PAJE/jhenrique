@@ -6,7 +6,13 @@
 </head>
 <body>
     <h1>Acessos Registrados</h1>
+
+    <form action="/gerar_relatorio/" method="post">
+        <button type="submit">Gerar Relatório</button>
     <table border="1">
+    
+    <p>{{ acessos|length }} Acessos</p>
+
         <thead>
             <tr>
                 <th>Nome</th>
