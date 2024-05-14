@@ -36,11 +36,13 @@ def gerar_relatorio(request):
     if not request.user.is_authenticated:
         return HttpResponse("Você precisa estar autenticado para gerar relatórios.", status=401)
 
-    # Criar um registro de relatório com o timestamp atual
-    relatorio = Relatorio.objects.create(solicitante=request.user)
+    # Criar um registro de relatório com o timestamp atual, ajustado para o horário local
+    now_local = timezone.localtime()  # Obtém o horário local
+    relatorio = Relatorio.objects.create(
+        solicitante=request.user, timestamp=now_local)
 
-    # Buscar acessos do dia atual
-    today = timezone.now().date()
+    # Buscar acessos do dia atual, usando o horário local
+    today = timezone.localdate()
     acessos = Acesso.objects.filter(
         data_hora__date=today).order_by('-data_hora')
 
@@ -51,11 +53,13 @@ def gerar_relatorio(request):
     writer.writeheader()
 
     for acesso in acessos:
+        # Converte data_hora para o fuso horário local antes de formatar
+        local_datetime = timezone.localtime(acesso.data_hora)
         writer.writerow({
             'Nome': acesso.nome,
             'Matrícula': acesso.matricula,
             'Número do Cartão': acesso.numero_cartao,
-            'Data/Hora do Acesso': acesso.data_hora.strftime('%d/%m/%Y %H:%M')
+            'Data/Hora do Acesso': local_datetime.strftime('%d/%m/%Y %H:%M')
         })
 
     response = HttpResponse(output.getvalue(), content_type='text/csv')
