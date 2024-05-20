@@ -54,7 +54,7 @@ class Relatorio(models.Model):
     timestamp = models.DateTimeField()
 
     def __str__(self):
-        return f"{self.solicitante.username} - {self.timestamp.strftime('%d/%m/%Y %H:%M')}"
+        return f"{self.solicitante.nome} - {self.timestamp.strftime('%d/%m/%Y %H:%M')}"
 
 
 class Acesso(models.Model):

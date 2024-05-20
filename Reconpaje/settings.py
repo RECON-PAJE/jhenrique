@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'reconhecimento_facial',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -49,6 +50,9 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+LOGIN_URL = '/entrar'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
