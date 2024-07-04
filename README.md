@@ -2,7 +2,7 @@
 
 ## Requerimentos
 
-- Python 3
+- Python 3.12.4
 - PostgreSQL
 
 ## Configurando o ambiente
