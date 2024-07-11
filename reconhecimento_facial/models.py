@@ -4,7 +4,6 @@ from django.db import models
 class ReconhecimentoFacial(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     reconheceu = models.BooleanField(default=False)
-    foto = models.ImageField(upload_to='fotos/')
     registro_acesso = models.CharField(max_length=100)
 
     def __str__(self):
