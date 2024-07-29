@@ -31,9 +31,9 @@ def login_view(request):
 
 @csrf_exempt
 def registrar_acesso(request):
-    matricula = request.POST.get('matricula')
+    cpf = request.POST.get('cpf')
     try:
-        aluno = Aluno.objects.get(matricula=matricula)
+        aluno = Aluno.objects.get(cpf=cpf)
         novo_acesso = Acesso.objects.create(
             numero_cartao=aluno.numero_cartao,
             matricula=aluno.matricula,

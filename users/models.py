@@ -5,6 +5,7 @@ from django.conf import settings
 from django.core.validators import validate_email
 
 CARD_NUMBER_VALIDATOR = RegexValidator(regex=r"^\d{10}$")
+CPF_VALIDATOR = RegexValidator(regex=r"^\d{11}$")
 
 
 class CustomUserManager(BaseUserManager):
@@ -43,6 +44,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class Aluno(models.Model):
     nome = models.CharField(max_length=30)
+    cpf = models.CharField(max_length=11, unique=True, validators=[CPF_VALIDATOR])
     matricula = models.CharField(max_length=6, unique=True)
     numero_cartao = models.CharField(
         max_length=10, unique=True, validators=[CARD_NUMBER_VALIDATOR])
